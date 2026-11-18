@@ -8,3 +8,5 @@ createRoot(document.getElementById('root')).render(
     <App />
   </StrictMode>,
 )
+import { supabase } from './supabaseClient'
+console.log('Supabase client:', supabase)
