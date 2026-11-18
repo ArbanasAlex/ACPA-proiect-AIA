@@ -21,7 +21,6 @@ router.post('/login', async (req, res) => {
   })
 
   if (error) {
-    console.log('Login error:', error.message)
     return res.status(401).json({ error: 'Email sau parolă greșită' })
   }
 
