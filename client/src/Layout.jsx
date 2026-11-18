@@ -1,4 +1,7 @@
+import { useState } from 'react'
 import Calendar from './Calendar'
+import AdminList from './AdminList'
+import { demoVehicles, demoInstructors, demoStudents } from './demoData'
 
 const MENU = {
   admin: ['Calendar', 'Rezervări', 'Cursanți', 'Instructori', 'Autoturisme'],
@@ -6,8 +9,61 @@ const MENU = {
   student: ['Calendar', 'Rezervări', 'Ore efectuate'],
 }
 
+const SECTIONS = {
+  Autoturisme: {
+    key: 'vehicles',
+    columns: [
+      { key: 'plate', label: 'Număr', type: 'text' },
+      { key: 'model', label: 'Model', type: 'text' },
+      { key: 'active', label: 'Status', type: 'bool' },
+    ],
+  },
+  Instructori: {
+    key: 'instructors',
+    columns: [
+      { key: 'full_name', label: 'Nume', type: 'text' },
+      { key: 'phone', label: 'Telefon', type: 'text' },
+      { key: 'active', label: 'Status', type: 'bool' },
+    ],
+  },
+  Cursanți: {
+    key: 'students',
+    columns: [
+      { key: 'full_name', label: 'Nume', type: 'text' },
+      { key: 'phone', label: 'Telefon', type: 'text' },
+      { key: 'category', label: 'Categorie', type: 'select', options: ['B', 'A', 'C'] },
+      { key: 'hours_done', label: 'Ore efectuate', type: 'number' },
+    ],
+  },
+}
+
 export default function Layout({ user, page, onNavigate, onLogout }) {
   const items = MENU[user.role] || ['Calendar']
+
+  const [data, setData] = useState({
+    vehicles: demoVehicles,
+    instructors: demoInstructors,
+    students: demoStudents,
+  })
+
+  const section = SECTIONS[page]
+
+  let content
+  if (page === 'Calendar') {
+    content = <Calendar />
+  } else if (section) {
+    content = (
+      <AdminList
+        key={page}
+        title={page}
+        items={data[section.key]}
+        setItems={(value) => setData((d) => ({ ...d, [section.key]: value }))}
+        columns={section.columns}
+      />
+    )
+  } else {
+    content = <p>Pagina „{page}" va fi construită aici.</p>
+  }
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', textAlign: 'left' }}>
@@ -51,11 +107,7 @@ export default function Layout({ user, page, onNavigate, onLogout }) {
 
       <main style={{ flex: 1, minWidth: 0, padding: 24 }}>
         <h2>{page}</h2>
-        {page === 'Calendar' ? (
-          <Calendar />
-        ) : (
-          <p>Pagina „{page}" va fi construită aici.</p>
-        )}
+        {content}
       </main>
     </div>
   )
