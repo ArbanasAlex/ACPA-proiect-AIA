@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import Login from './Login'
+import Layout from './Layout'
 
 const API = 'http://localhost:3000'
 
 export default function App() {
   const [token, setToken] = useState(null)
   const [user, setUser] = useState(null)
+  const [page, setPage] = useState('Calendar')
 
   useEffect(() => {
     if (!token) return
@@ -14,13 +16,14 @@ export default function App() {
       .then(setUser)
   }, [token])
 
-  if (!token) return <Login onLogin={setToken} />
+  function logout() {
+    setToken(null)
+    setUser(null)
+    setPage('Calendar')
+  }
 
-  return (
-    <div style={{ maxWidth: 480, margin: '80px auto' }}>
-      <h2>Bun venit{user ? `, ${user.full_name}` : ''}!</h2>
-      {user && <p>Rol: {user.role}</p>}
-      <button onClick={() => { setToken(null); setUser(null) }}>Ieșire</button>
-    </div>
-  )
+  if (!token) return <Login onLogin={setToken} />
+  if (!user) return <p style={{ padding: 24 }}>Se încarcă...</p>
+
+  return <Layout user={user} page={page} onNavigate={setPage} onLogout={logout} />
 }
