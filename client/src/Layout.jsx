@@ -1,3 +1,5 @@
+import Calendar from './Calendar'
+
 const MENU = {
   admin: ['Calendar', 'Rezervări', 'Cursanți', 'Instructori', 'Autoturisme'],
   instructor: ['Calendar', 'Disponibilitate', 'Ore efectuate'],
@@ -9,7 +11,17 @@ export default function Layout({ user, page, onNavigate, onLogout }) {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', textAlign: 'left' }}>
-      <aside style={{ width: 220, padding: 16, background: '#1f2937', color: 'white', display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <aside
+        style={{
+          width: 220,
+          padding: 16,
+          background: '#1f2937',
+          color: 'white',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 8,
+        }}
+      >
         <h3 style={{ margin: '0 0 12px' }}>Haiduc-Auto</h3>
         {items.map((item) => (
           <button
@@ -31,13 +43,19 @@ export default function Layout({ user, page, onNavigate, onLogout }) {
         <div style={{ marginTop: 'auto', fontSize: 14 }}>
           <div>{user.full_name}</div>
           <div style={{ opacity: 0.7 }}>{user.role}</div>
-          <button onClick={onLogout} style={{ marginTop: 8 }}>Ieșire</button>
+          <button onClick={onLogout} style={{ marginTop: 8 }}>
+            Ieșire
+          </button>
         </div>
       </aside>
 
-      <main style={{ flex: 1, padding: 24 }}>
+      <main style={{ flex: 1, minWidth: 0, padding: 24 }}>
         <h2>{page}</h2>
-        <p>Pagina „{page}” va fi construită aici.</p>
+        {page === 'Calendar' ? (
+          <Calendar />
+        ) : (
+          <p>Pagina „{page}" va fi construită aici.</p>
+        )}
       </main>
     </div>
   )
