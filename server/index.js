@@ -1,8 +1,6 @@
 require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
-const supabase = require('./supabase')
-console.log('Supabase conectat:', !!supabase)
 
 const app = express()
 app.use(cors())
