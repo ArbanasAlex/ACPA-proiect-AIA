@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import Calendar from './Calendar'
 import AdminList from './AdminList'
-import { demoVehicles, demoInstructors, demoStudents } from './demoData'
+import BookingForm from './BookingForm'
+import { demoVehicles, demoInstructors, demoStudents, demoBookings } from './demoData'
 
 const MENU = {
   admin: ['Calendar', 'Rezervări', 'Cursanți', 'Instructori', 'Autoturisme'],
@@ -37,6 +38,8 @@ const SECTIONS = {
   },
 }
 
+const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6']
+
 export default function Layout({ user, page, onNavigate, onLogout }) {
   const items = MENU[user.role] || ['Calendar']
 
@@ -45,12 +48,40 @@ export default function Layout({ user, page, onNavigate, onLogout }) {
     instructors: demoInstructors,
     students: demoStudents,
   })
+  const [bookings, setBookings] = useState(demoBookings)
+  const [slot, setSlot] = useState(null)
+
+  const events = bookings.map((b) => {
+    const ins = data.instructors.find((i) => i.id === b.instructorId)
+    const stu = data.students.find((s) => s.id === b.studentId)
+    const idx = Math.max(data.instructors.findIndex((i) => i.id === b.instructorId), 0)
+    return {
+      id: b.id,
+      title: `${stu ? stu.full_name : '?'} · ${ins ? ins.full_name : '?'}`,
+      start: b.start,
+      end: b.end,
+      color: COLORS[idx % COLORS.length],
+    }
+  })
+
+  function cancelBooking(id) {
+    if (window.confirm('Anulezi această rezervare?')) {
+      setBookings((list) => list.filter((b) => b.id !== id))
+    }
+  }
 
   const section = SECTIONS[page]
 
   let content
   if (page === 'Calendar') {
-    content = <Calendar />
+    content = (
+      <>
+        <p style={{ opacity: 0.7 }}>
+          Click pe un slot pentru o rezervare nouă, click pe o rezervare pentru a o anula.
+        </p>
+        <Calendar events={events} onSlotClick={setSlot} onEventClick={cancelBooking} />
+      </>
+    )
   } else if (section) {
     content = (
       <AdminList
@@ -109,6 +140,19 @@ export default function Layout({ user, page, onNavigate, onLogout }) {
         <h2>{page}</h2>
         {content}
       </main>
+
+      {slot && (
+        <BookingForm
+          slot={slot}
+          data={data}
+          bookings={bookings}
+          onSave={(b) => {
+            setBookings((list) => [...list, b])
+            setSlot(null)
+          }}
+          onClose={() => setSlot(null)}
+        />
+      )}
     </div>
   )
 }

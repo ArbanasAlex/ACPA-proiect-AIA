@@ -8,24 +8,13 @@ import '@fullcalendar/react/skeleton.css'
 import '@fullcalendar/react/themes/classic/theme.css'
 import '@fullcalendar/react/themes/classic/palette.css'
 
-function demoEvents() {
-  const base = new Date()
-  base.setHours(0, 0, 0, 0)
-  const at = (dayOffset, hour, minutes = 0) => {
-    const d = new Date(base)
-    d.setDate(d.getDate() + dayOffset)
-    d.setHours(hour, minutes)
-    return d.toISOString()
-  }
-  return [
-    { title: 'Ion Popescu · Instr. Marin', start: at(0, 9), end: at(0, 10, 30), color: '#3b82f6' },
-    { title: 'Ana Dumitru · Instr. Marin', start: at(0, 11), end: at(0, 12, 30), color: '#3b82f6' },
-    { title: 'Mihai Ene · Instr. Radu', start: at(1, 14), end: at(1, 15, 30), color: '#10b981' },
-    { title: 'Elena Stan · Instr. Radu', start: at(2, 10), end: at(2, 11, 30), color: '#10b981' },
-  ]
+function toDate(raw) {
+  if (raw instanceof Date) return raw
+  const d = new Date(String(raw).replace(/\[.*\]$/, ''))
+  return isNaN(d) ? null : d
 }
 
-export default function Calendar() {
+export default function Calendar({ events, onSlotClick, onEventClick }) {
   return (
     <FullCalendar
       plugins={[themePlugin, dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -46,10 +35,14 @@ export default function Calendar() {
         timeGridWeek: { text: 'Săptămână' },
         dayGridMonth: { text: 'Lună' },
       }}
-      events={demoEvents()}
+      events={events}
       dateClick={(info) => {
         console.log('Slot ales:', info)
-        alert('Slot ales')
+        const d = toDate(info.date ?? info.dateStr)
+        if (d) onSlotClick(d)
+      }}
+      eventClick={(info) => {
+        if (info.event && info.event.id) onEventClick(info.event.id)
       }}
     />
   )
