@@ -26,3 +26,11 @@ export const demoBookings = [
   { id: 'b2', instructorId: 'i1', vehicleId: 'v1', studentId: 's2', start: at(0, 11), end: at(0, 12, 30) },
   { id: 'b3', instructorId: 'i2', vehicleId: 'v2', studentId: 's3', start: at(1, 14), end: at(1, 15, 30) },
 ]
+// weekday: 1 = luni ... 7 = duminică
+export const demoAvailability = [
+  { id: 'a1', instructorId: 'i1', weekday: 1, from: '08:00', to: '16:00' },
+  { id: 'a2', instructorId: 'i1', weekday: 2, from: '08:00', to: '16:00' },
+  { id: 'a3', instructorId: 'i1', weekday: 3, from: '10:00', to: '18:00' },
+  { id: 'a4', instructorId: 'i2', weekday: 1, from: '12:00', to: '20:00' },
+  { id: 'a5', instructorId: 'i2', weekday: 4, from: '08:00', to: '14:00' },
+]

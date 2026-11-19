@@ -2,10 +2,17 @@ import { useState } from 'react'
 import Calendar from './Calendar'
 import AdminList from './AdminList'
 import BookingForm from './BookingForm'
-import { demoVehicles, demoInstructors, demoStudents, demoBookings } from './demoData'
+import Availability from './Availability'
+import {
+  demoVehicles,
+  demoInstructors,
+  demoStudents,
+  demoBookings,
+  demoAvailability,
+} from './demoData'
 
 const MENU = {
-  admin: ['Calendar', 'Rezervări', 'Cursanți', 'Instructori', 'Autoturisme'],
+  admin: ['Calendar', 'Disponibilitate', 'Rezervări', 'Cursanți', 'Instructori', 'Autoturisme'],
   instructor: ['Calendar', 'Disponibilitate', 'Ore efectuate'],
   student: ['Calendar', 'Rezervări', 'Ore efectuate'],
 }
@@ -49,6 +56,7 @@ export default function Layout({ user, page, onNavigate, onLogout }) {
     students: demoStudents,
   })
   const [bookings, setBookings] = useState(demoBookings)
+  const [availability, setAvailability] = useState(demoAvailability)
   const [slot, setSlot] = useState(null)
 
   const events = bookings.map((b) => {
@@ -81,6 +89,14 @@ export default function Layout({ user, page, onNavigate, onLogout }) {
         </p>
         <Calendar events={events} onSlotClick={setSlot} onEventClick={cancelBooking} />
       </>
+    )
+  } else if (page === 'Disponibilitate') {
+    content = (
+      <Availability
+        instructors={data.instructors}
+        availability={availability}
+        setAvailability={setAvailability}
+      />
     )
   } else if (section) {
     content = (
